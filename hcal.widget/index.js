@@ -1,68 +1,76 @@
-command: "echo Hello World!",
-// command: 'date -v1d +"%e"; date -v1d -v+1m -v-1d +"%d"; date +"%d%n%m%n%Y"',
+command: "echo 'Lauching LineCalendar...'",
 
-dayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-offdayIndices: [5, 6], // Fr, Sa
- 
-refreshFrequency: 5000,
+offdayIndices: [0, 6], // Saturday & Sunday
+
+refreshFrequency: "15min",
 displayedDate: null,
 
-render: function (output) {
-  return '<div class="cal-container">'
-  + '<div class=\"title\"></div>'
-  + '<table>'
-  + '<tr class=\"weekday\"></tr>'
-  + '<tr class=\"midline\"></tr>'
-  + '<tr class=\"date\"></tr>'
-  + '</table>'
-  + '</div>';
 },
- 
+
+render: function () {
+  return "<div class=\"cal-container\">\
+  <div class=\"week\"></div>\
+  <div class=\"title\"></div>\
+  <table>\
+  <tr class=\"weekday\"></tr>\
+  <tr class=\"midline\"></tr>\
+  <tr class=\"date\"></tr>\
+  </table>\
+  </div>";
+},
+
 style: "                              \n\
-  bottom: 20px                        \n\
-  left: 20px                          \n\
-  font-family: Helvetica Neue         \n\
-  font-size: 11px                     \n\
+  bottom: 17px                        \n\
+  right: 600px                         \n\
+  left: 30px                         \n\
+  font-family: -apple-system          \n\
+  font-size: 13px                     \n\
   font-weight: 500                    \n\
   color: #fff                         \n\
                                       \n\
   .cal-container                      \n\
-    border-radius: 10px               \n\
-    background: rgba(#000, 0.3)       \n\
-    padding: 10px                     \n\
+    background: rgba(#000, 0)         \n\
+    padding: 0px                      \n\
                                       \n\
   .title                              \n\
+    display: inline-block             \n\
     color: rgba(#fff, .3)             \n\
-    font-size: 14px                   \n\
+    font-size: 20px                   \n\
     font-weight: 500                  \n\
-    padding-bottom: 5px               \n\
+    padding-bottom: 14px              \n\
     text-transform uppercase          \n\
+  .title                              \n\
+    text-align: right				          \n\
+    float: right                      \n\
                                       \n\
   table                               \n\
     border-collapse: collapse         \n\
+    table-layout: fixed 			        \n\
+    width: 100% 					            \n\
                                       \n\
   td                                  \n\
-    padding-left: 4px                 \n\
-    padding-right: 4px                \n\
     text-align: center                \n\
                                       \n\
   .weekday td                         \n\
-    padding-top: 3px                  \n\
+    padding-top: 6px                  \n\
+    padding-bottom: 6px				        \n\
                                       \n\
   .date td                            \n\
-    padding-bottom: 3px               \n\
+    padding-top: 6px                  \n\
+    padding-bottom: 6px               \n\
                                       \n\
   .today, .off-today                  \n\
     background: rgba(#fff, 0.2)       \n\
                                       \n\
   .weekday .today,                    \n\
   .weekday .off-today                 \n\
-    border-radius: 3px 3px 0 0        \n\
+    padding-bottom: 6px 			        \n\
                                       \n\
   .date .today,                       \n\
   .date .off-today                    \n\
-    border-radius: 0 0 3px 3px        \n\
+    padding-top: 6px 				          \n\
                                       \n\
   .midline                            \n\
     height: 3px                       \n\
@@ -83,13 +91,13 @@ style: "                              \n\
 
 update: function (output, domEl) {
   // var date = output.split("\n"), firstWeekDay = date[0], lastDate = date[1], today = date[2], m = date[3]-1, y = date[4];
-  
+
   // // DON'T MANUPULATE DOM IF NOT NEEDED
   // if(this.displayedDate != null && this.displayedDate == output) return;
   // else this.displayedDate = output;
 
   var date = new Date(), y = date.getFullYear(), m = date.getMonth(), today = date.getDate();
-  
+
   // DON'T MANUPULATE DOM IF NOT NEEDED
   var newDate = [today, m, y].join("/");
   if(this.displayedDate != null && this.displayedDate == newDate) return;
@@ -97,7 +105,7 @@ update: function (output, domEl) {
 
   var firstWeekDay = new Date(y, m, 1).getDay();
   var lastDate = new Date(y, m + 1, 0).getDate();
-  
+
   var weekdays = "", midlines = "", dates = "";
 
   for (var i = 1, w = firstWeekDay; i <= lastDate; i++, w++) {
@@ -113,7 +121,7 @@ update: function (output, domEl) {
     dates += "<td class=\""+className+"\">" + i + "</td>";
   };
 
-  $(domEl).find(".title").html(this.monthNames[m]+" "+y);
+  $(domEl).find(".title").html(this.monthNames[m]+" <span style='color:lightgray'>"+y+"</span>");
   $(domEl).find(".weekday").html(weekdays);
   $(domEl).find(".midline").html(midlines);
   $(domEl).find(".date").html(dates);
